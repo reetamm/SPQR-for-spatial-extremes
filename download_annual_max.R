@@ -8,8 +8,7 @@ library(stringr)
 
 # Download the data
 
- setwd("S:\\Desktop\\HCDN\\")
- stn <- read.csv("HCDN-2009_Station_Info.csv")
+ stn <- read.csv("HCDN/HCDN-2009_Station_Info.csv")
 
 # Remove sites outside the CONUS
 
@@ -37,7 +36,7 @@ library(stringr)
 # Specify which data to download
 
  startDate   <- "1950-01-01"
- endDate     <- "2020-12-31"
+ endDate     <- "2021-12-31"
  parameterCd <- c("00060")  # Discharge
  statCd      <- c("00003")  # Maximum
  nsites      <- length(ID)
@@ -67,5 +66,4 @@ library(stringr)
  
  rm(i,dat,y,j,t,these)
  rm(startDate,endDate,parameterCd,statCd,min_obs_yr)
- save.image("HCDN_annual_max.RData")
-
+ save.image("HCDN/HCDN_annual_max.RData")
