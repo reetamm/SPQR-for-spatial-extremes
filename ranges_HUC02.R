@@ -150,11 +150,6 @@ vario_yr$gamma = gamma_mean
 tmp = fit.variogram(vario_yr, vgm(c("Exp","Sph","Mat")))
 plot(vario_yr,tmp)
 
-plot(1950:2021,ranges)
-summary(ranges[-14])
-max(ranges[-14])/111 #6.7
-
-
 ## chi 2 plot
 Y1 = Y_log
 dim(Y1)

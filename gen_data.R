@@ -1,5 +1,25 @@
 logit <- function(x){log(x/(1-x))}
 
+# Prep the HUC02 data for analysis
+data_prep = function(Y,s){
+    Y       <- Y[,23:72] # Select last 50 years
+    year    <- year[23:72] # Select last 50 years
+    nmiss   <- rowSums(is.na(Y)) # Missingness at stations
+    Y       <- Y[nmiss==0,] # Select stations with complete data
+    s       <- s[nmiss==0,] # Coordinates of stations with complete data
+    
+    # Scale the domain to (0,1)
+    s[,1]   <- s[,1]-min(s[,1])
+    s[,2]   <- s[,2]-min(s[,2])
+    s_scale <- max(s)
+    s       <- s/s_scale
+    
+    Y[Y<1]  <- 1 # Set minimum value to 1
+    Y       <- log(Y) # log transform
+    out = list(Y=Y,s=s,nmiss=nmiss,s_scale = s_scale)
+    return(out)
+}
+
 # Sample spatial locations and compute neighbors
 create_locations_evp <- function(k=10,n=50,seed=1,min_dist=0.025){
     set.seed(seed)
