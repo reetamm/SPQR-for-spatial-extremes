@@ -6,7 +6,7 @@ library(doParallel)
 library(SPQR)
 library(SpatialExtremes)
 load("HCDN/HCDN_annual_max.RData")
-load("~/GitHub/SPQR-for-spatial-extremes/fitted_SPQR_models.RData")
+load("fitted_SPQR_models.RData")
 # cores = detectCores()
 # cores
 
