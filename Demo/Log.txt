@@ -210,3 +210,43 @@ Stopping... Best epoch: 33
 Final loss: training: -54.693047, validation: -51.443894
 
 [1] "location 25 batch 1 fitted in 320.15 seconds"
+starting worker pid=30872 on localhost:11030 at 11:51:15.290
+starting worker pid=16788 on localhost:11030 at 11:51:15.292
+starting worker pid=7400 on localhost:11030 at 11:51:15.309
+starting worker pid=13900 on localhost:11030 at 11:51:15.334
+starting worker pid=9148 on localhost:11030 at 11:51:15.336
+starting worker pid=11040 on localhost:11030 at 11:51:15.336
+starting worker pid=27552 on localhost:11030 at 11:51:15.336
+starting worker pid=22916 on localhost:11030 at 11:51:15.349
+starting worker pid=31288 on localhost:11030 at 11:51:15.353
+starting worker pid=16940 on localhost:11030 at 11:51:15.355
+Loss at epoch 1: training: -6.392197, validation: -22.943706
+Loss at epoch 1: training: -49.623298, validation: -93.336371
+Loss at epoch 1: training: -13.981634, validation: -29.589271
+Loss at epoch 1: training: -44.463600, validation: -83.274107
+Loss at epoch 1: training: -42.408600, validation: -77.702831
+Loss at epoch 1: training: -67.590298, validation: -120.397229
+Loss at epoch 1: training: -88.169468, validation: -152.447702
+Loss at epoch 1: training: -44.383928, validation: -75.349490
+Loss at epoch 1: training: -19.062067, validation: -36.281389
+Loss at epoch 1: training: -28.570291, validation: -66.541362
+Loss at epoch 10: training: -37.984447, validation: -38.277860
+Loss at epoch 10: training: -121.484389, validation: -114.346880
+Loss at epoch 10: training: -49.467285, validation: -44.537101
+Loss at epoch 10: training: -105.254475, validation: -107.887956
+Loss at epoch 10: training: -152.371100, validation: -155.266901
+Loss at epoch 10: training: -100.327348, validation: -98.883241
+Loss at epoch 10: training: -187.696016, validation: -186.183183
+Loss at epoch 10: training: -49.069125, validation: -50.927067
+Loss at epoch 10: training: -99.740929, validation: -98.912139
+Loss at epoch 10: training: -88.745539, validation: -85.988214
+Loss at epoch 20: training: -128.363698, validation: -120.852699
+Loss at epoch 20: training: -39.503164, validation: -39.126491
+Loss at epoch 20: training: -110.757144, validation: -110.431468
+Loss at epoch 20: training: -51.330875, validation: -44.025506
+Loss at epoch 20: training: -104.301749, validation: -99.446218
+Loss at epoch 20: training: -157.986957, validation: -160.437836
+Loss at epoch 20: training: -197.036466, validation: -192.868660
+Loss at epoch 20: training: -103.131485, validation: -99.832858
+Loss at epoch 20: training: -51.385011, validation: -49.906123
+Loss at epoch 20: training: -94.217916, validation: -88.873073
