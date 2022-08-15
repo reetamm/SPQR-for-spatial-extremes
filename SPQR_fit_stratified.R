@@ -10,10 +10,9 @@ load("HCDN/HCDN_annual_max.RData")
 
 # Switches to GPU if CUDA is set up.
 # This is a flag in the SPQR function
+use.gpu = F # Set to CPU by default
 if(cuda_is_available())
     use.gpu = T
-if(!cuda_is_available())
-    use.gpu = F
 
 trunc.data = data_prep(Y,s)
 Y = trunc.data$Y

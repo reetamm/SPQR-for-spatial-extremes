@@ -1,5 +1,5 @@
-load("~/GitHub/SPQR-for-spatial-extremes/MCMC_outputs.RData")
-load("~/GitHub/SPQR-for-spatial-extremes/HCDN/HCDN_annual_max.RData")
+load("MCMC_outputs.RData")
+load("HCDN/HCDN_annual_max.RData")
 
 library(ggplot2)
 library(maps)

@@ -1,0 +1,212 @@
+starting worker pid=16296 on localhost:11125 at 09:07:12.325
+starting worker pid=25968 on localhost:11125 at 09:07:12.451
+starting worker pid=9336 on localhost:11125 at 09:07:12.576
+starting worker pid=23112 on localhost:11125 at 09:07:12.698
+starting worker pid=8984 on localhost:11125 at 09:07:12.815
+starting worker pid=24104 on localhost:11125 at 09:07:12.929
+starting worker pid=17524 on localhost:11125 at 09:07:13.050
+starting worker pid=26340 on localhost:11125 at 09:07:13.171
+starting worker pid=17360 on localhost:11125 at 09:07:13.292
+starting worker pid=29184 on localhost:11125 at 09:07:13.411
+Loss at epoch 1: training: -9.174597, validation: -22.553009
+Loss at epoch 1: training: -45.296986, validation: -92.031895
+Loss at epoch 1: training: -17.747262, validation: -27.636528
+Loss at epoch 1: training: -42.130941, validation: -80.206035
+Loss at epoch 1: training: -80.291010, validation: -123.315364
+Loss at epoch 1: training: -40.452017, validation: -73.659256
+Loss at epoch 1: training: -80.102626, validation: -151.960329
+Loss at epoch 1: training: -43.529592, validation: -73.706375
+Loss at epoch 1: training: -17.894025, validation: -37.086942
+Loss at epoch 1: training: -29.610118, validation: -65.393265
+Loss at epoch 10: training: -37.954935, validation: -38.268275
+Loss at epoch 10: training: -121.101478, validation: -115.739685
+Loss at epoch 10: training: -50.138104, validation: -44.534781
+Loss at epoch 10: training: -105.335453, validation: -108.576925
+Loss at epoch 10: training: -153.021787, validation: -149.766474
+Loss at epoch 10: training: -100.013916, validation: -93.682125
+Loss at epoch 10: training: -188.411374, validation: -186.559781
+Loss at epoch 10: training: -99.103171, validation: -98.657693
+Loss at epoch 10: training: -49.281320, validation: -51.183341
+Loss at epoch 10: training: -89.192004, validation: -88.272826
+Loss at epoch 20: training: -39.709984, validation: -39.004768
+Loss at epoch 20: training: -128.428824, validation: -119.715675
+Loss at epoch 20: training: -51.644437, validation: -43.733166
+Loss at epoch 20: training: -110.615337, validation: -110.781749
+Loss at epoch 20: training: -158.965960, validation: -159.980132
+Loss at epoch 20: training: -104.391903, validation: -100.790197
+Loss at epoch 20: training: -198.598721, validation: -195.216305
+Loss at epoch 20: training: -102.849767, validation: -99.027012
+Loss at epoch 20: training: -51.136636, validation: -50.540196
+Loss at epoch 20: training: -93.576001, validation: -89.075238
+Loss at epoch 30: training: -40.559246, validation: -39.521598
+Loss at epoch 30: training: -132.200161, validation: -121.758565
+Loss at epoch 30: training: -52.884701, validation: -45.396840
+Loss at epoch 30: training: -113.552607, validation: -113.371984
+Loss at epoch 30: training: -161.774441, validation: -161.167838
+Loss at epoch 30: training: -106.834015, validation: -101.538670
+Loss at epoch 30: training: -203.965333, validation: -195.846041
+Loss at epoch 30: training: -104.646294, validation: -100.696925
+Loss at epoch 30: training: -52.275563, validation: -51.053930
+Loss at epoch 30: training: -96.024543, validation: -88.994378
+Stopping... Best epoch: 38
+Final loss: training: -51.668633, validation: -46.888317
+
+[1] "location 4 batch 1 fitted in 447.23 seconds"
+Loss at epoch 40: training: -41.206143, validation: -39.707416
+Loss at epoch 40: training: -133.833422, validation: -123.342212
+Loss at epoch 40: training: -115.341570, validation: -113.038538
+Loss at epoch 40: training: -164.764899, validation: -163.113696
+Loss at epoch 40: training: -108.240730, validation: -100.225783
+Loss at epoch 40: training: -106.412148, validation: -100.065528
+Loss at epoch 40: training: -207.754261, validation: -200.697401
+Loss at epoch 40: training: -53.844296, validation: -50.568478
+Loss at epoch 40: training: -98.498970, validation: -87.086438
+Stopping... Best epoch: 43
+Final loss: training: -103.511164, validation: -100.743134
+
+[1] "location 9 batch 1 fitted in 503.53 seconds"
+Loss at epoch 1: training: -37.201016, validation: -60.825828
+Stopping... Best epoch: 46
+Final loss: training: -52.277705, validation: -51.609619
+
+Stopping... Best epoch: 46
+Final loss: training: -95.140095, validation: -89.697979
+
+[1] "location 10 batch 1 fitted in 536 seconds"
+[1] "location 11 batch 1 fitted in 536.03 seconds"
+Stopping... Best epoch: 47
+Final loss: training: -40.145031, validation: -40.258802
+
+[1] "location 2 batch 1 fitted in 537.17 seconds"
+Loss at epoch 50: training: -134.591918, validation: -124.721581
+Loss at epoch 50: training: -116.065917, validation: -112.968316
+[1] "location 3 batch 1 fitted in 569.8 seconds"
+[1] "location 5 batch 1 fitted in 570.3 seconds"
+Loss at epoch 50: training: -165.503164, validation: -164.991338
+[1] "location 6 batch 1 fitted in 571.15 seconds"
+Loss at epoch 50: training: -108.906275, validation: -101.032002
+Loss at epoch 1: training: -63.124683, validation: -104.793340
+[1] "location 7 batch 1 fitted in 573.58 seconds"
+Loss at epoch 50: training: -209.244592, validation: -199.642805
+[1] "location 8 batch 1 fitted in 576.53 seconds"
+Loss at epoch 1: training: -28.664377, validation: -38.910161
+Loss at epoch 1: training: -24.414812, validation: -45.909558
+Loss at epoch 10: training: -82.333747, validation: -81.874607
+Loss at epoch 1: training: -53.099512, validation: -81.125951
+Loss at epoch 1: training: -68.080409, validation: -116.764626
+Loss at epoch 1: training: -20.694818, validation: -50.468793
+Loss at epoch 1: training: -33.818153, validation: -66.821963
+Loss at epoch 1: training: -41.600184, validation: -72.464955
+Loss at epoch 1: training: -61.558868, validation: -109.244909
+Loss at epoch 10: training: -134.960678, validation: -128.656355
+Loss at epoch 10: training: -57.103009, validation: -52.889815
+Loss at epoch 10: training: -64.140528, validation: -61.061720
+Loss at epoch 10: training: -110.956228, validation: -107.208566
+Loss at epoch 20: training: -85.030384, validation: -82.886345
+Loss at epoch 10: training: -149.067249, validation: -148.153206
+Loss at epoch 10: training: -79.178521, validation: -73.507817
+Loss at epoch 10: training: -87.775468, validation: -89.663831
+Loss at epoch 10: training: -104.773116, validation: -97.385432
+Loss at epoch 10: training: -138.559260, validation: -136.661520
+Loss at epoch 20: training: -139.429481, validation: -131.123557
+Loss at epoch 20: training: -59.933181, validation: -51.861266
+Loss at epoch 20: training: -67.593169, validation: -62.092934
+Loss at epoch 20: training: -116.616333, validation: -108.283970
+Loss at epoch 30: training: -87.830812, validation: -82.374761
+Loss at epoch 20: training: -82.550742, validation: -71.935622
+Loss at epoch 20: training: -153.432160, validation: -150.062774
+Loss at epoch 20: training: -92.581061, validation: -90.883147
+Loss at epoch 20: training: -108.671138, validation: -97.571961
+Loss at epoch 20: training: -144.041332, validation: -136.607858
+Loss at epoch 30: training: -143.426773, validation: -131.689386
+Loss at epoch 30: training: -61.231947, validation: -52.163201
+Loss at epoch 30: training: -70.070161, validation: -59.686575
+Loss at epoch 30: training: -119.542014, validation: -107.972203
+Stopping... Best epoch: 31
+Final loss: training: -57.800214, validation: -53.184105
+
+[1] "location 14 batch 1 fitted in 393.22 seconds"
+Loss at epoch 40: training: -89.439221, validation: -81.189063
+Loss at epoch 30: training: -157.378527, validation: -148.481165
+Loss at epoch 30: training: -85.617548, validation: -70.543258
+Stopping... Best epoch: 30
+Final loss: training: -79.178521, validation: -73.507817
+
+[1] "location 18 batch 1 fitted in 385.47 seconds"
+Loss at epoch 30: training: -95.736997, validation: -90.345455
+Loss at epoch 30: training: -111.919210, validation: -98.221801
+Loss at epoch 30: training: -147.859691, validation: -139.414144
+Stopping... Best epoch: 45
+Final loss: training: -86.371517, validation: -84.090731
+
+[1] "location 12 batch 1 fitted in 538.08 seconds"
+Loss at epoch 40: training: -144.852781, validation: -133.899792
+Loss at epoch 1: training: -31.880586, validation: -53.059225
+Stopping... Best epoch: 38
+Final loss: training: -115.792215, validation: -109.059563
+
+[1] "location 16 batch 1 fitted in 469.08 seconds"
+Loss at epoch 40: training: -72.437774, validation: -58.259043
+Stopping... Best epoch: 40
+Final loss: training: -67.593169, validation: -62.092934
+
+[1] "location 15 batch 1 fitted in 486.33 seconds"
+Loss at epoch 1: training: -16.302832, validation: -41.569012
+Stopping... Best epoch: 37
+Final loss: training: -107.859932, validation: -99.365981
+
+[1] "location 20 batch 1 fitted in 458.55 seconds"
+Loss at epoch 40: training: -159.919922, validation: -147.798116
+Loss at epoch 1: training: -2.969932, validation: -10.830748
+Loss at epoch 40: training: -98.131038, validation: -90.013567
+Loss at epoch 40: training: -150.734897, validation: -139.565501
+Loss at epoch 1: training: -15.428691, validation: -32.799980
+Loss at epoch 50: training: -147.696466, validation: -132.628061
+[1] "location 13 batch 1 fitted in 587.06 seconds"
+Loss at epoch 1: training: -1.604290, validation: -9.933492
+Loss at epoch 10: training: -71.868430, validation: -70.297398
+Stopping... Best epoch: 46
+Final loss: training: -155.760883, validation: -151.303120
+
+[1] "location 17 batch 1 fitted in 543.6 seconds"
+Stopping... Best epoch: 46
+Final loss: training: -94.975056, validation: -91.256879
+
+Loss at epoch 10: training: -53.394327, validation: -57.537047
+[1] "location 19 batch 1 fitted in 544.08 seconds"
+Stopping... Best epoch: 47
+Final loss: training: -147.850304, validation: -140.498119
+
+[1] "location 21 batch 1 fitted in 555.32 seconds"
+Loss at epoch 10: training: -22.400331, validation: -19.311664
+Loss at epoch 10: training: -53.553615, validation: -51.142158
+Loss at epoch 10: training: -19.279352, validation: -17.100676
+Loss at epoch 20: training: -76.010100, validation: -68.478497
+Loss at epoch 20: training: -57.076715, validation: -56.745315
+Loss at epoch 20: training: -25.420107, validation: -18.023024
+Loss at epoch 20: training: -56.969180, validation: -50.484055
+Loss at epoch 20: training: -22.052647, validation: -15.432177
+Loss at epoch 30: training: -78.271128, validation: -67.217943
+Stopping... Best epoch: 30
+Final loss: training: -71.868430, validation: -70.297398
+
+[1] "location 22 batch 1 fitted in 329.34 seconds"
+Loss at epoch 30: training: -59.527044, validation: -55.281737
+Loss at epoch 30: training: -28.023145, validation: -16.108948
+Stopping... Best epoch: 27
+Final loss: training: -17.950029, validation: -17.132351
+
+[1] "location 26 batch 1 fitted in 275.45 seconds"
+Stopping... Best epoch: 35
+Final loss: training: -55.754406, validation: -58.201231
+
+[1] "location 23 batch 1 fitted in 352.55 seconds"
+Loss at epoch 30: training: -59.978098, validation: -49.291713
+Stopping... Best epoch: 34
+Final loss: training: -23.376811, validation: -19.950138
+
+[1] "location 24 batch 1 fitted in 334.65 seconds"
+Stopping... Best epoch: 33
+Final loss: training: -54.693047, validation: -51.443894
+
+[1] "location 25 batch 1 fitted in 320.15 seconds"

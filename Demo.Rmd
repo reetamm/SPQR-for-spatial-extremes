@@ -1,0 +1,293 @@
+---
+title: "Demo of SPQR for Spatial Extremes"
+output: html_notebook
+---
+
+This is a short demo for the workflow of estimating extremal streamflow using a spatial process. For the sake of brevity, we have considered sites only in the northeastern part of the country.
+
+We first import all the required packages:
+
+```{r}
+rm(list = ls())
+library(ggplot2)
+library(fields)
+library(torch)
+library(SPQR)
+library(SpatialExtremes)
+library(doParallel)
+source("gen_data.R",local = T)
+source("utils_MSP.R",local = T)
+source("MCMC_veccia_approx_HUC02_SVC.R", local = T)
+load("HCDN/HCDN_annual_max.RData")
+```
+
+SPQR takes advantage of the <code>torch</code> package in R which supports GPU acceleration, so next, we check if GPU is available for running SPQR.
+
+```{r}
+use.gpu = F
+if(cuda_is_available())
+    use.gpu = T
+```
+
+In most of our presented code, this next section is wrapped in the <code>data_prep()</code> function. However, we present it here for clarity, and also because we have some extra steps of only selecting a subset of sites in the HCDN network.
+
+```{r}
+Y       <- Y[,23:72] # Select last 50 years
+year    <- year[23:72] # Select last 50 years
+nmiss   <- rowSums(is.na(Y)) # Missingness at stations
+Y       <- Y[nmiss==0 & HUC02==1,] # Select stations with complete data
+s       <- s[nmiss==0 & HUC02==1,] # Coordinates of stations with complete data
+    
+# Scale the domain to (0,1)
+s[,1]   <- s[,1]-min(s[,1])
+s[,2]   <- s[,2]-min(s[,2])
+s_scale <- max(s)
+s       <- s/s_scale
+    
+Y[Y<1]  <- 1 # Set minimum value to 1
+Y       <- log(Y) # log transform
+dim(Y)
+head(s)
+```
+
+The extra qualifier in this chunk is <code>HUC02==1</code> which selects only the stations in the NE (see .csv file for details). Alongside the data completeness requirement, this gives us 26 locations.
+
+In the data preparation step before running SPQR, we use 100,000 observations instead of 200,000 that is used in the paper. Also note that we are not using the actual data for the local SPQR fits. We will, however, use the spatial configuration.
+
+```{r}
+n       <- nrow(s) # Number of locations
+loc     <- create_locations(NS = 15, m = n, locs = s) # NS is number of neighbors
+
+n_train     <- 100000 # Training data size for each local SPQR
+lr          <- 0.01 # Learning Rate
+epochs      <- 50 # Number of training epochs
+n.knots     <- 15 # Number of output knots
+n.hidden    <- c(30,20) # Number of neurons in each hidden layer
+
+features    <- function(delta,rho,r,Y){qnorm(rbind(delta,2*rho,r,Y))} # Function to create covariate matrix
+```
+
+We make a cluster with 10 nodes, and use GPU acceleration. For most users, this would not be viable on their personal desktops. However, this example is small enough that users can just make a cluster with a single node (setting the first argument of makeCluster to be 1), commenting out registerDoParallel, and run it in sequence using registerDoSEQ. verbose is set to TRUE in the SPQR call, so the console will print the status of the model fits.
+
+Users can also skip this step entirely, since the output is provided in the Demo folder, and can be used for the next steps.
+
+```{r}
+cl          <- makeCluster(10,outfile = 'Demo/Log.txt')
+                                                    
+registerDoParallel(cl)
+# registerDoSEQ()
+
+fits <- foreach(id=2:n, .packages = c('SPQR','torch','SpatialExtremes')) %dopar% {
+    mle.control     <- list(batch.size = 1000, epochs = epochs, lr = lr,
+                            use.GPU = use.gpu, early.stopping.epochs = 20, save.name=paste0("mspgp_fit.pt"))
+    tic <- proc.time()
+    min_delta <- 0.01
+    max_delta <- 0.99
+    set.seed(919*id + 1)
+    nn          <- c(id,na.omit(loc$nn_id[id,])) # Each local SPQR will generate data for only the location and its conditioning set
+    dat         <- gen_data_evp_local(n = n_train, s = as.matrix(loc$locs[nn,]),
+                                     min_delta = min_delta, max_delta = max_delta)
+    rho         <- dat$rho
+    delta       <- dat$delta
+    r           <- dat$r
+    Y           <- dat$Y
+    modelname   <- paste('ffnn', id, '1', sep = '_')
+    mle.control$save.name <- paste0("mspgp_fit_st", id, "batch 1.pt")
+    y           <- Y[1,]
+    X           <- t(features(delta = delta, rho = rho, r = r, Y = Y[-1,]))   
+    fit         <- SPQR(X = X, Y = y, n.knots = n.knots, n.hidden = n.hidden, activation = "sigmoid",
+                      method = "MLE", control = mle.control, normalize = FALSE, verbose = T)
+    save.SPQR(fit,modelname, path = 'Demo')
+    toc <- proc.time()
+    timetaken <- (toc-tic)[3]
+    print(paste('location', id, 'batch 1 fitted in', timetaken, 'seconds'))
+}
+stopCluster(cl)
+```
+
+```{r}
+X       <- (year-mean(year))/10 # Standardize the effect of the year
+ns      <- nrow(Y)
+nt      <- ncol(Y)
+
+params_list_ensemble    <- list()
+num_models              <- 2 # Number of models per location
+
+features <- function(delta,rho,r,Y){qnorm(rbind(delta,2*rho,r,Y))}
+
+for(q in 1:num_models){
+    params_list <- vector(mode = 'list',length = ns)
+    for(i in 2:ns){
+        objname         <- paste('ffnn',i,1,sep = '_')
+        testmodel       <- load.SPQR(objname,path = 'Demo')
+        ffnn_params     <- get.nn.params(testmodel)
+        params_list[[i]]<- ffnn_params
+    }
+    params_list_ensemble[[q]] <- params_list
+}
+```
+
+```{r}
+mean_deltas <- c(0.2,0.8) # 2 chains with 2 different starting values of delta
+mean_deltas <- qnorm(mean_deltas)
+nsims       <- length(mean_deltas)
+```
+
+```{r}
+cl          <- makeCluster(2,outfile = 'Demo/MCMC.txt')
+registerDoParallel(cl)
+# registerDoSEQ()
+output_app  <- foreach(sim = 1:nsims,.packages = c('Rfast','SpatialExtremes')) %dopar% {
+    set.seed(sim)
+    output_local  <- veccia_app_local(Y = Y,locs=loc,ffnn_params = params_list_ensemble,
+                                      K=15,iters=11000,burn=1000,thin=1,update=1000,mean_delta = mean_deltas[sim])
+} 
+stopCluster(cl)
+```
+
+```{r}
+par(mfrow=c(2,4))
+outHUC02 <- output_app[[1]]
+hist(outHUC02[[2]][,1], main = expression(delta), xlab = '')
+hist(outHUC02[[2]][,2], main = expression(rho), xlab = '')
+hist(outHUC02[[2]][,3], main = expression(r), xlab = '')
+hist(outHUC02[[2]][,4], main = expression(rho[2]), xlab = '')
+outHUC02 <- output_app[[2]]
+hist(outHUC02[[2]][,1], main = expression(delta), xlab = '')
+hist(outHUC02[[2]][,2], main = expression(rho), xlab = '')
+hist(outHUC02[[2]][,3], main = expression(r), xlab = '')
+hist(outHUC02[[2]][,4], main = expression(rho[2]), xlab = '')
+
+outHUC02 <- output_app[[1]]
+plot(1:11000,outHUC02[[2]][,1], main = expression(delta), xlab = '',type = 'l')
+plot(1:11000,outHUC02[[2]][,2], main = expression(rho), xlab = '',type = 'l')
+plot(1:11000,outHUC02[[2]][,3], main = expression(r), xlab = '',type = 'l')
+plot(1:11000,outHUC02[[2]][,4], main = expression(rho[2]), xlab = '',type = 'l')
+outHUC02 <- output_app[[2]]
+plot(1:11000,outHUC02[[2]][,1], main = expression(delta), xlab = '',type = 'l')
+plot(1:11000,outHUC02[[2]][,2], main = expression(rho), xlab = '',type = 'l')
+plot(1:11000,outHUC02[[2]][,3], main = expression(r), xlab = '',type = 'l')
+plot(1:11000,outHUC02[[2]][,4], main = expression(rho[2]), xlab = '',type = 'l')
+par(mfrow=c(1,1))
+```
+
+The posterior means from MCMC for the GEV parameters are:
+
+```{r}
+params <- c('delta','rho','r','rho[2]')
+
+par(mfrow=c(1,1))
+outHUC02_1 <- output_app[[1]]
+outHUC02_2 <- output_app[[2]]
+ plot(1:11000,outHUC02_1[[2]][,1],main = expression(delta), ylab = 'Estimate',xlab = 'Iteration',type = 'l',col='red',ylim = c(0.2,0.8))
+lines(1:11000,outHUC02_2[[2]][,1],main = expression(delta), ylab = 'Estimate',xlab = 'Iteration',type = 'l',col='blue')
+ plot(1:11000,outHUC02_1[[2]][,2],main = expression(rho),   ylab = 'Estimate',xlab = 'Iteration',type = 'l',col='red')
+lines(1:11000,outHUC02_2[[2]][,2],main = expression(rho),   ylab = 'Estimate',xlab = 'Iteration',type = 'l',col='blue')
+ plot(1:11000,outHUC02_1[[2]][,3],main = expression(r),     ylab = 'Estimate',xlab = 'Iteration',type = 'l',col='red')
+lines(1:11000,outHUC02_2[[2]][,3],main = expression(r),     ylab = 'Estimate',xlab = 'Iteration',type = 'l',col='blue')
+ plot(1:11000,outHUC02_1[[2]][,4],main = expression(rho[2]),ylab = 'Estimate',xlab = 'Iteration',type = 'l',col='red')
+lines(1:11000,outHUC02_2[[2]][,4],main = expression(rho[2]),ylab = 'Estimate',xlab = 'Iteration',type = 'l',col='blue')
+
+```
+
+We re-import the data again since we now want the original spatial domain to do the plots on the US map
+
+```{r}
+load("HCDN/HCDN_annual_max.RData")
+Y1 = Y[,23:72]
+dim(Y1)
+howmanymissing  <- function(x){sum(is.na(x))}
+missingnum      <- (apply(Y1,1,howmanymissing))
+Y2              <- Y1[missingnum==0 & HUC02==1,]
+Y2[Y2<1]        <- 1
+Y_log           <- log(Y2)
+s2              <- s[missingnum==0 & HUC02==1,]
+```
+
+Preparatory code to plot spatial map of posterior means
+
+```{r}
+out         <- output_app[[1]]
+theta_sp    <- out$theta_sp[1001:11000,]
+theta_gev   <- out$theta_gev[1001:11000,,]
+out         <- output_app[[2]]
+theta_sp    <- rbind(theta_sp,out$theta_sp[1001:11000,])
+theta_gev   <- abind::abind(theta_gev,out$theta_gev[1001:11000,,],along = 1)
+theta_sp[,c(2,4)]   <- theta_sp[,c(2,4)]*(s_scale*111)
+dim(theta_gev)
+theta_gev[,,3]      <- log(theta_gev[,,3])
+means_sp    <- apply(theta_sp,2,mean)
+sd_sp       <- apply(theta_sp,2,sd)
+means_gev   <- matrix(nrow = 26,ncol = 4)
+for(i in 1:26){
+    means_gev[i,] <- apply(theta_gev[,i,], 2, mean)
+}
+
+MainStates  <- map_data("state")
+means_gev   <- data.frame(means_gev,s2)
+names(means_gev) <- c('mu0','mu1','sigma','xi','lon','lat')
+```
+
+Posterior means
+
+```{r}
+mu_exp <- expression(mu[0])
+ggplot() + geom_polygon(data=MainStates, aes(x=long, y=lat, group=group),color="black", fill="white" ) +
+    geom_point(data = means_gev,aes(x=lon,y=lat,col=mu0),size=2) + coord_fixed(1.3) + #theme_bw() + 
+    scale_color_gradient(low = "yellow", high = "darkblue",name=mu_exp)  +
+    theme(legend.position = c(0.92,0.25), legend.title.align=0.1,
+          legend.text = element_text(size = 14),
+          axis.text.x = element_blank(),axis.text.y = element_blank(), axis.ticks = element_blank(),
+          axis.title.x = element_blank(),axis.title.y = element_blank(),
+          panel.border = element_blank(),panel.background = element_blank())
+
+mu_exp <- expression(mu[1])
+ggplot() + geom_polygon(data=MainStates, aes(x=long, y=lat, group=group),color="black", fill="white" ) +
+    geom_point(data = means_gev,aes(x=lon,y=lat,col=mu1),size=2) + coord_fixed(1.3) + #theme_bw() + 
+    scale_color_gradient(low = "yellow", high = "darkblue",name=mu_exp)  +
+    theme(legend.position = c(0.92,0.25), legend.title.align=0.1,
+          legend.text = element_text(size = 14),
+          axis.text.x = element_blank(),axis.text.y = element_blank(), axis.ticks = element_blank(),
+          axis.title.x = element_blank(),axis.title.y = element_blank(),
+          panel.border = element_blank(),panel.background = element_blank())
+sig_exp <- expression(sigma)
+ggplot() + geom_polygon(data=MainStates, aes(x=long, y=lat, group=group),color="black", fill="white" ) +
+    geom_point(data = means_gev,aes(x=lon,y=lat,col=sigma),size=2) + coord_fixed(1.3) + #theme_bw() + 
+    scale_color_gradient(low = "yellow", high = "darkblue",name=sig_exp)  +
+    theme(legend.position = c(0.92,0.25), legend.title.align=0.1,
+          legend.text = element_text(size = 14),
+          axis.text.x = element_blank(),axis.text.y = element_blank(), axis.ticks = element_blank(),
+          axis.title.x = element_blank(),axis.title.y = element_blank(),
+          panel.border = element_blank(),panel.background = element_blank())
+xi1 <- expression(xi)
+ggplot() + geom_polygon(data=MainStates, aes(x=long, y=lat, group=group),color="black", fill="white" ) +
+    geom_point(data = means_gev,aes(x=lon,y=lat,col=xi),size=2) + coord_fixed(1.3) + #theme_bw() + 
+    scale_color_gradient(low = "yellow", high = "darkblue",name=xi1)  +
+    theme(legend.position = c(0.92,0.25), legend.title.align=0.1,
+          legend.text = element_text(size = 14),
+          axis.text.x = element_blank(),axis.text.y = element_blank(), axis.ticks = element_blank(),
+          axis.title.x = element_blank(),axis.title.y = element_blank(),
+          panel.border = element_blank(),panel.background = element_blank())
+```
+
+Map for the probability that the intercept has increased in the last 50 years
+
+```{r}
+mu1             <- theta_gev[,,2]
+mu1_positive    <- apply(mu1,2,function(x)mean(x>0))
+summary(mu1_positive)
+means_gev$mu1_positive <- mu1_positive
+```
+
+```{r}
+prob <- expression(P(mu[1]>0))
+ggplot() + geom_polygon(data=MainStates, aes(x=long, y=lat, group=group),color="black", fill="white" ) +
+    geom_point(data = means_gev,aes(x=lon,y=lat,col=mu1_positive),size=2) + coord_fixed(1.3) + #theme_bw() + 
+    scale_color_gradient(low = "yellow", high = "darkblue",name=prob)  +
+    theme(legend.position = c(0.92,0.25), legend.title.align=-.1,
+          legend.text = element_text(size = 14),
+          axis.text.x = element_blank(),axis.text.y = element_blank(), axis.ticks = element_blank(),
+          axis.title.x = element_blank(),axis.title.y = element_blank(),
+          panel.border = element_blank(),panel.background = element_blank())
+```
+

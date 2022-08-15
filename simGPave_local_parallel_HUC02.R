@@ -34,7 +34,7 @@ loc <- create_locations(NS=15,m=ns,locs = s)
 #     for(i in 2:ns){
 #         print(paste(q,i))
 #         objname         <- paste('ffnn',i,1,sep = '_')
-#         testmodel       <- load.SPQR(objname,path = 'C:/Users/rmajumd3/Documents/GitHub/SpatExtreme/EVP_HUC02_1model')
+#         testmodel       <- load.SPQR(objname,path = 'EVP_HUC02_1model')
 #         ffnn_params     <- get.nn.params(testmodel)
 #         params_list[[i]]<- ffnn_params
 #     }
