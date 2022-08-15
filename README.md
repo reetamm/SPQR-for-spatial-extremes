@@ -12,6 +12,9 @@ RMarkdown file and its corresponding output demonstrating the methodology from t
 ## HCDN Folder
 This folder contains details of all the stations in the network (as a .csv and .xlsx file) as well as <code>HCDN_annual_max.RData</code> which has data on the 702 locations for 1950 -- 2021.
 
+## <code>SPQR-for-spatial-extremes.Rproj</code>
+RStudio project object which sets the working directory and relative paths of all the remaining files provided. 
+
 ## <code>download_annual_max.R</code>
 Contains code for downloading the annual extremal streamflow data used in this study. Will generate all the variables needed for the <code>HCDN_annual_max.RData</code> file.
 
